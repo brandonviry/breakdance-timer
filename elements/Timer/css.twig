@@ -1,1 +1,232 @@
 %%SELECTOR%% { }
+
+%%SELECTOR%% {
+    text-align: center;
+    padding: clamp(10px, 4vw, 20px);
+    background-color: {{design.globall.background_color }};
+    width: 100%;
+    box-sizing: border-box;
+}
+
+%%SELECTOR%% .timer-display {
+    display: flex;
+    gap: clamp(8px, 2vw, 15px);
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 100%;
+}
+
+%%SELECTOR%% .timer-box {
+    color: {{ design.globall.color_texte }};
+    padding: clamp(8px, 3vw, 15px);
+    min-width: clamp(60px, 15vw, 80px);
+    text-align: center;
+    flex: 1 1 auto;
+    box-sizing: border-box;
+    min-width: 100px;
+    padding: 20px;
+   
+}
+
+%%SELECTOR%% .timer-box-days {
+    background-color: {{ design.globall.background_color_card }};
+    {{macros.border_complex(design.globall.boder_card)}}
+    {{ macros.border_radius(design.globall.border_raduis) }}
+   
+}
+
+%%SELECTOR%% .timer-box-hours {
+    background-color: {{ design.globall.background_color_card }};
+    {{macros.border_complex(design.globall.boder_card)}}
+    {{ macros.border_radius(design.globall.border_raduis) }}
+}
+
+%%SELECTOR%% .timer-box-minutes {
+    background-color: {{ design.globall.background_color_card }};
+    {{macros.border_complex(design.globall.boder_card)}}
+    {{ macros.border_radius(design.globall.border_raduis) }}
+}
+
+%%SELECTOR%% .timer-box-seconds {
+    background-color: {{ design.globall.background_color_card }};
+    {{macros.border_complex(design.globall.boder_card)}}
+    {{ macros.border_radius(design.globall.border_raduis) }}
+}
+
+%%SELECTOR%% .timer-value {
+    font-size: clamp(1.2rem, 4vw, {{design.globall.font.custom.customTypography.fontSize.style}});
+    font-weight: {{design.globall.font.custom.customTypography.fontWeight}};
+    line-height: 1.2;
+    word-break: break-all;
+
+    flex-direction:row;
+}
+
+%%SELECTOR%% .timer-label {
+    font-size:  calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} / 2.5);
+    margin-top: clamp(4px, 1.5vw, 8px);
+    line-height: 1.3;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+%%SELECTOR%% .timer-status {
+    color: white;
+    padding: clamp(10px, 3vw, 20px);
+    font-size: clamp(1rem, 3vw, 1.125rem);
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+%%SELECTOR%% .timer-status-success {
+    background: #4CAF50;
+}
+
+%%SELECTOR%% .timer-status-error {
+    background: #f44336;
+}
+
+/* Media Queries pour optimisation responsive */
+
+/* Tablettes en portrait et petits écrans */
+@media (max-width: 768px) {
+    %%SELECTOR%% {
+        padding: 15px 10px;
+    }
+    
+    %%SELECTOR%% .timer-display {
+        gap: 10px;
+        justify-content: space-around;
+    }
+    
+    %%SELECTOR%% .timer-box {
+        min-width: 70px;
+        flex: 1 1 calc(25% - 10px);
+        max-width: none;
+        
+    }
+    
+    %%SELECTOR%% .timer-box-days,
+    %%SELECTOR%% .timer-box-hours,
+    %%SELECTOR%% .timer-box-minutes,
+    %%SELECTOR%% .timer-box-seconds {
+        {{macros.border_complex(design.globall.boder_card)}}
+        {{ macros.border_radius(design.globall.border_raduis) }}
+    }
+    
+    %%SELECTOR%% .timer-value {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} * 0.8);
+        font-weight: {{design.globall.font.custom.customTypography.fontWeight}};
+    }
+    
+    %%SELECTOR%% .timer-label {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} / 3);
+    }
+}
+
+/* Smartphones */
+@media (max-width: 480px) {
+    %%SELECTOR%% {
+        padding: 10px 5px;
+    }
+    
+    %%SELECTOR%% .timer-display {
+        gap: 8px;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    %%SELECTOR%% .timer-box {
+        min-width: 60px;
+        padding: 8px 4px;
+        flex: 1 1 calc(25% - 6px);
+    }
+    
+    %%SELECTOR%% .timer-box-days,
+    %%SELECTOR%% .timer-box-hours,
+    %%SELECTOR%% .timer-box-minutes,
+    %%SELECTOR%% .timer-box-seconds {
+        {{macros.border_complex(design.globall.boder_card)}}
+        {{ macros.border_radius(design.globall.border_raduis) }}
+    }
+    
+    %%SELECTOR%% .timer-value {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} * 0.6);
+        font-weight: {{design.globall.font.custom.customTypography.fontWeight}};
+    }
+    
+    %%SELECTOR%% .timer-label {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} / 4);
+        margin-top: 2px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.9;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 320px) {
+    %%SELECTOR%% .timer-display {
+        gap: 5px;
+    }
+    
+    %%SELECTOR%% .timer-box {
+        min-width: 50px;
+        padding: 6px 2px;
+    }
+    
+    %%SELECTOR%% .timer-box-days,
+    %%SELECTOR%% .timer-box-hours,
+    %%SELECTOR%% .timer-box-minutes,
+    %%SELECTOR%% .timer-box-seconds {
+        {{macros.border_complex(design.globall.boder_card)}}
+        {{ macros.border_radius(design.globall.border_raduis) }}
+    }
+    
+    %%SELECTOR%% .timer-value {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} * 0.5);
+        font-weight: {{design.globall.font.custom.customTypography.fontWeight}};
+    }
+    
+    %%SELECTOR%% .timer-label {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} / 5);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        opacity: 0.9;
+    }
+}
+
+/* Grands écrans */
+@media (min-width: 1200px) {
+    %%SELECTOR%% .timer-display {
+        gap: 20px;
+        flex-wrap:nowrap;
+    }
+    
+    %%SELECTOR%% .timer-box {
+        min-width: 100px;
+        padding: 20px;
+    }
+    
+    %%SELECTOR%% .timer-box-days,
+    %%SELECTOR%% .timer-box-hours,
+    %%SELECTOR%% .timer-box-minutes,
+    %%SELECTOR%% .timer-box-seconds {
+        {{macros.border_complex(design.globall.boder_card)}}
+        {{ macros.border_radius(design.globall.border_raduis) }}
+    }
+    
+    %%SELECTOR%% .timer-value {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} * 1.2);
+        font-weight: {{design.globall.font.custom.customTypography.fontWeight}};
+    }
+    
+    %%SELECTOR%% .timer-label {
+        font-size: calc({{design.globall.font.custom.customTypography.fontSize.number }}{{design.globall.font.custom.customTypography.fontSize.unit }} / 2);
+    }
+}

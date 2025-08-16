@@ -86,12 +86,92 @@ class Timer extends \Breakdance\Elements\Element
 
     static function designControls()
     {
-        return [];
+        return [c(
+        "globall",
+        "Globall",
+        [c(
+        "background_color",
+        "background-color",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "background_color_card",
+        "background-color-card",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "color_texte",
+        "Color texte",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "font",
+        "Font",
+        [],
+        ['type' => 'typography', 'layout' => 'vertical'],
+        false,
+        true,
+        [],
+      ), c(
+        "boder_card",
+        "boder card",
+        [],
+        ['type' => 'border_complex', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "border_raduis",
+        "Border raduis",
+        [],
+        ['type' => 'border_radius', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      )];
     }
 
     static function contentControls()
     {
-        return [];
+        return [c(
+        "setting_",
+        "Setting ",
+        [c(
+        "date",
+        "Date",
+        [],
+        ['type' => 'date_picker', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "time",
+        "Time",
+        [],
+        ['type' => 'time_picker', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      )];
     }
 
     static function settingsControls()
@@ -116,7 +196,21 @@ class Timer extends \Breakdance\Elements\Element
 
     static public function actions()
     {
-        return false;
+        return [
+
+'onPropertyChange' => [['script' => '
+                // Trouver tous les timers sur la page et les recharger
+                const timers = document.querySelectorAll("[id^=\'timer-\']");
+                timers.forEach(function(timerEl) {
+                    const timerId = timerEl.id;
+                    const functionName = "reloadTimer_" + timerId.replace("-", "_");
+                    if (window[functionName]) {
+                        console.log("Rechargement du timer:", timerId);
+                        window[functionName]();
+                    }
+                });
+            ','dependencies' => ['content.setting_.date','content.setting_.time'],'runForAllChildren' => true,
+],],];
     }
 
     static function nestingRule()
@@ -146,7 +240,7 @@ class Timer extends \Breakdance\Elements\Element
 
     static function dynamicPropertyPaths()
     {
-        return false;
+        return [];
     }
 
     static function additionalClasses()

@@ -1,1 +1,216 @@
-Blank Element
+ {% set timer_id = 'timer-' ~ random() %}
+{% set strtime_id = 'strtime-' ~ random() %}
+
+
+<div id="{{ strtime_id }}" style="display: none;">{{ content.setting_.date|date('d/m/Y') }} - {{ content.setting_.time|date('H\\hi') }}</div>
+
+
+
+
+
+<div id="{{ timer_id }} ">
+    <div class="timer-display" >
+        <div class="timer-box timer-box-days"  style="">
+            <div class="timer-value" id="{{ timer_id }}-days">0</div>
+            <div class="timer-label">JOURS</div>
+        </div>
+        <div class="timer-box timer-box-hours">
+            <div class="timer-value" id="{{ timer_id }}-hours">00</div>
+            <div class="timer-label">HEURES</div>
+        </div>
+        <div class="timer-box timer-box-minutes">
+            <div class="timer-value" id="{{ timer_id }}-minutes">00</div>
+            <div class="timer-label">MINUTES</div>
+        </div>
+        <div class="timer-box timer-box-seconds">
+            <div class="timer-value" id="{{ timer_id }}-seconds">00</div>
+            <div class="timer-label">SECONDES</div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    
+    const TIMER_ID = '{{ timer_id }}';
+    const STRTIME_ID = '{{ strtime_id }}';
+    
+    console.log("Timer script démarré pour:", TIMER_ID);
+    
+    let currentInterval = null;
+    let lastDateStr = '';
+    let observer = null;
+    
+    // Validation stricte du format de date
+    function validateAndParseDate(dateStr) {
+        if (typeof dateStr !== 'string') return null;
+        
+        const match = /^(\d{2})\/(\d{2})\/(\d{4}) - (\d{2})h(\d{2})$/.exec(dateStr.trim());
+        if (!match) return null;
+        
+        const [, day, month, year, hour, minute] = match.map(Number);
+        
+        // Validation des valeurs
+        if (day < 1 || day > 31 || month < 1 || month > 12 || 
+            year < 2000 || year > 3000 || hour > 23 || minute > 59) {
+            return null;
+        }
+        
+        const date = new Date(year, month - 1, day, hour, minute);
+        
+        // Vérifier que la date est valide
+        if (date.getFullYear() !== year || 
+            date.getMonth() !== month - 1 || 
+            date.getDate() !== day ||
+            date.getHours() !== hour ||
+            date.getMinutes() !== minute) {
+            return null;
+        }
+        
+        return date;
+    }
+    
+    function showError(message) {
+        const timer = document.getElementById(TIMER_ID);
+        if (!timer) return;
+        
+        // Sécurisé: création d'éléments DOM au lieu d'innerHTML
+        timer.innerHTML = '';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'timer-status timer-status-error';
+        errorDiv.textContent = message; // textContent échappe automatiquement
+        timer.appendChild(errorDiv);
+    }
+    
+    function showCompleted() {
+        const timer = document.getElementById(TIMER_ID);
+        if (!timer) return;
+        
+        // Sécurisé: création d'éléments DOM au lieu d'innerHTML
+        timer.innerHTML = '';
+        const completedDiv = document.createElement('div');
+        completedDiv.className = 'timer-status timer-status-success';
+        completedDiv.textContent = 'TERMINÉ!'; // textContent échappe automatiquement
+        timer.appendChild(completedDiv);
+    }
+    
+    function updateDisplay(days, hours, minutes, seconds) {
+        const daysEl = document.getElementById(TIMER_ID + '-days');
+        const hoursEl = document.getElementById(TIMER_ID + '-hours');
+        const minutesEl = document.getElementById(TIMER_ID + '-minutes');
+        const secondsEl = document.getElementById(TIMER_ID + '-seconds');
+        
+        if (daysEl) daysEl.textContent = days;
+        if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+        if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+        if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
+    }
+    
+    function stopTimer() {
+        if (currentInterval) {
+            clearTimeout(currentInterval);
+            currentInterval = null;
+        }
+    }
+    
+    function startTimer(targetTime) {
+        stopTimer();
+        
+        function updateTimer() {
+            const now = new Date().getTime();
+            const remaining = targetTime - now;
+            
+            if (remaining <= 0) {
+                showCompleted();
+                return;
+            }
+            
+            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            
+            if (days < 0 || hours < 0 || minutes < 0 || seconds < 0) {
+                showError('Erreur de calcul du temps');
+                return;
+            }
+            
+            updateDisplay(days, hours, minutes, seconds);
+            currentInterval = setTimeout(updateTimer, 1000);
+        }
+        
+        updateTimer();
+    }
+    
+    function handleDateChange() {
+        const strtime = document.getElementById(STRTIME_ID);
+        if (!strtime) return;
+        
+        const dateStr = strtime.textContent.trim();
+        
+        if (dateStr !== lastDateStr) {
+            console.log("Changement détecté pour", TIMER_ID, ":", dateStr);
+            lastDateStr = dateStr;
+            
+            const targetDate = validateAndParseDate(dateStr);
+            if (!targetDate) {
+                // Échapper les données utilisateur pour éviter XSS
+                const safeMessage = `Format de date invalide: ${dateStr.replace(/[<>&"']/g, '')}`;
+                showError(safeMessage);
+                return;
+            }
+            
+            const targetTime = targetDate.getTime();
+            startTimer(targetTime);
+        }
+    }
+    
+    function setupMutationObserver() {
+        const strtime = document.getElementById(STRTIME_ID);
+        if (!strtime) return;
+        
+        observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    handleDateChange();
+                }
+            });
+        });
+        
+        observer.observe(strtime, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+            attributes: false
+        });
+        
+        setInterval(handleDateChange, 1000);
+    }
+    
+    // Fonction globale accessible depuis Breakdance onPropertyChange
+    window['reloadTimer_' + TIMER_ID.replace('-', '_')] = function() {
+        console.log("Rechargement demandé pour:", TIMER_ID);
+        handleDateChange();
+    };
+    
+    function init() {
+        console.log("Init appelé pour:", TIMER_ID);
+        handleDateChange();
+        setupMutationObserver();
+    }
+    
+    window.addEventListener('beforeunload', function() {
+        if (observer) {
+            observer.disconnect();
+        }
+        stopTimer();
+    });
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
